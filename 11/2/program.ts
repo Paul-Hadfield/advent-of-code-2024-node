@@ -7,7 +7,7 @@ const BLINKS = 25
 function processStone(previousValue: number, currentValue: string, currentBlink: number, numberOfBlinks: number): number {
 
     if (currentBlink === 1) {
-        console.log(`root stone ${currentValue} - ${Date.now()}`);
+        console.log(`root stone ${currentValue}`);
     }
 
     if (currentValue === "0") {
@@ -45,7 +45,7 @@ function processStone(previousValue: number, currentValue: string, currentBlink:
 
 const data = fs.readFileSync("./data.txt").toString().split(" ");
 
-console.log(`Start - ${Date.now().toLocaleString()}`);
+console.log('Start');
 const stones = data.reduce((previousValue: number, currentValue: string) => processStone(previousValue, currentValue, 1, BLINKS), 0)
 console.log(stones);
 
