@@ -1,40 +1,51 @@
 import * as fs from "fs";
 
-const MULTIPLIER = BigInt(2024);
+const MULTIPLIER = 2024;
 
-function blink(previousValue: string[], currentValue: string, currentIndex: number, array: string[]): string[] {
-    
+const BLINKS = 25
+
+function processStone(previousValue: number, currentValue: string, currentBlink: number, numberOfBlinks: number): number {
+
+    if (currentBlink === 1) {
+        console.log(`root stone ${currentValue} - ${Date.now()}`);
+    }
+
     if (currentValue === "0") {
-        previousValue.push("1");
-        return previousValue;
+        if (currentBlink === numberOfBlinks) {
+            return previousValue + 1;
+        }
+
+        return processStone(previousValue, "1", currentBlink + 1, numberOfBlinks);
     }
     
     const length = currentValue.length;
     if (length % 2 === 0) {
+        if (currentBlink === numberOfBlinks) {
+            return previousValue + 2;
+        }
+
         const middle = length / 2;
         const leftPart = currentValue.slice(0, middle);
         const rightPart = currentValue.slice(middle);
-        previousValue.push(leftPart);
-        const numericValue = BigInt(rightPart);
-        previousValue.push(numericValue > 0 ? numericValue.toString() : "0");
-        return previousValue;
+        const numericValue = parseInt(rightPart);
+        const parsedRightPart = numericValue > 0 ? numericValue.toString() : "0";
+
+        return previousValue +
+            processStone(0, leftPart, currentBlink + 1, numberOfBlinks) +
+            processStone(0, parsedRightPart, currentBlink + 1, numberOfBlinks);
+
+    }
+    
+    if (currentBlink === numberOfBlinks) {
+        return previousValue + 1;
     }
 
-    previousValue.push((BigInt(currentValue) * MULTIPLIER).toString());
-    return previousValue;
-
+    return processStone(previousValue, (parseInt(currentValue) * MULTIPLIER).toString(), currentBlink + 1, numberOfBlinks);
 }
 
 const data = fs.readFileSync("./data.txt").toString().split(" ");
-let working = data;
-const blinks = 75
 
-// console.log(working);
-for (let i = 0; i < blinks; i++) {
-    console.log(`Blink ${i + 1}`);
-    working = working.reduce(blink, new Array<string>);
-    // console.log(working);
-}
-
-console.log(working.length < 20 ? working : working.length)
+console.log(`Start - ${Date.now().toLocaleString()}`);
+const stones = data.reduce((previousValue: number, currentValue: string) => processStone(previousValue, currentValue, 1, BLINKS), 0)
+console.log(stones);
 
