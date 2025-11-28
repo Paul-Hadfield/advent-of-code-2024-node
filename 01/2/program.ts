@@ -1,40 +1,24 @@
 import * as fs from "fs";
-
 import { performance } from "perf_hooks";
+
 const start = performance.now();
 
-function getCounts(val1: string, vals2: string[]): number {
-    let count = 0;
+const data = fs.readFileSync("./data.txt", "utf8").trim().split("\n");
 
-    vals2.forEach((data) => {
-        if (val1 === data) count++;
-    });
-    return count;
+const vals1: number[] = [];
+const counts2 = new Map<number, number>();
+
+for (const line of data) {
+    const [a, b] = line.replace(/\s\s+/g, " ").split(" ");
+    const val1 = Number(a);
+    const val2 = Number(b);
+    vals1.push(val1);
+    counts2.set(val2, (counts2.get(val2) ?? 0) + 1);
 }
 
-const data = fs.readFileSync("./data.txt").toString().split("\n");
-const data2 = data.reduce((acc: Array<Array<string>>, val: string) => {
-    acc.push(val.replace(/\s\s+/g, " ").split(" "));
-    return acc;
-}, new Array<Array<string>>());
-
-const vals1 = data2.map((data) => {
-    return data[0];
-});
-
-const vals2 = data2.map((data) => {
-    return data[1];
-});
-
-vals1.sort();
-vals2.sort();
-
-const len = vals1.length;
-
-var result = 0;
-for (let i = 0; i < len; i++) {
-    const count = getCounts(vals1[i], vals2);
-    result = result + parseInt(vals1[i]) * count;
+let result = 0;
+for (const v of vals1) {
+    result += v * (counts2.get(v) ?? 0);
 }
 
 console.log(result);
