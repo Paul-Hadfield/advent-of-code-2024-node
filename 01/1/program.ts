@@ -3,28 +3,25 @@ import { performance } from "perf_hooks";
 
 const start = performance.now();
 
-const data = fs.readFileSync("./example.txt").toString().split("\n");
-const data2 = data.reduce((acc: Array<Array<string>>, val: string) => {
-    acc.push(val.replace(/\s\s+/g, " ").split(" "));
-    return acc;
-}, new Array<Array<string>>());
+const lines = fs.readFileSync("./example.txt", "utf8").trim().split("\n");
 
-const vals1 = data2.map((data) => {
-    return data[0];
-});
+const vals1: number[] = [];
+const vals2: number[] = [];
 
-const vals2 = data2.map((data) => {
-    return data[1];
-});
+for (const line of lines) {
+    if (!line) continue;
+    // Split on whitespace, avoiding the regex replace + extra array allocations.
+    const [a, b] = line.split(/\s+/);
+    vals1.push(Number(a));
+    vals2.push(Number(b));
+}
 
-vals1.sort();
-vals2.sort();
+vals1.sort((a, b) => a - b);
+vals2.sort((a, b) => a - b);
 
-const len = vals1.length;
-
-var result = 0;
-for (let i = 0; i < len; i++) {
-    result = result + Math.abs(parseInt(vals1[i]) - parseInt(vals2[i]));
+let result = 0;
+for (let i = 0; i < vals1.length; i++) {
+    result += Math.abs(vals1[i] - vals2[i]);
 }
 
 console.log(result);
