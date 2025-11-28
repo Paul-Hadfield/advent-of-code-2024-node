@@ -3,7 +3,7 @@ import { performance } from "perf_hooks";
 
 const start = performance.now();
 
-const lines = fs.readFileSync("./example.txt", "utf8").trim().split("\n");
+const lines = fs.readFileSync("./data.txt", "utf8").trim().split("\n");
 
 const vals1: number[] = [];
 const vals2: number[] = [];
