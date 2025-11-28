@@ -1,4 +1,7 @@
 import * as fs from "fs";
+import { performance } from "perf_hooks";
+
+const start = performance.now();
 
 function checkSafe(data: string[]): "safe" | "unsafe" {
     const initialDiff = parseInt(data[1]) - parseInt(data[0]);
@@ -57,3 +60,6 @@ function countSafe(
 
 const data = fs.readFileSync("./data.txt").toString().split("\n");
 console.log(data.map(isSafe).reduce(countSafe, 0));
+
+const durationMs = performance.now() - start;
+console.log(`Execution time: ${durationMs.toFixed(3)}ms`);

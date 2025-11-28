@@ -1,4 +1,7 @@
 import * as fs from "fs";
+import { performance } from "perf_hooks";
+
+const start = performance.now();
 
 function up(grid: string[], row: number, col: number): boolean {
     if (row < 3) {
@@ -210,3 +213,6 @@ for (let row = 0; row < grid.length; row++) {
     }
 }
 console.log(count);
+
+const durationMs = performance.now() - start;
+console.log(`Execution time: ${durationMs.toFixed(3)}ms`);

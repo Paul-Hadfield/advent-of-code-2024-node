@@ -1,4 +1,7 @@
 import * as fs from "fs";
+import { performance } from "perf_hooks";
+
+const start = performance.now();
 
 function func(previousValue: number, currentValue: string): number {
     const parts = currentValue.match(regex2);
@@ -17,9 +20,6 @@ function processDo(instructions: string): string[] {
         const part1 = instructions.substring(0, place);
         const part2 = instructions.substring(place + 7);
 
-        console.log(instructions);
-        console.log(part1);
-        console.log(part2);
         return [part1, ...processDont(part2)];
     }
 
@@ -32,9 +32,6 @@ function processDont(instructions: string): string[] {
         const part1 = instructions.substring(0, place);
         const part2 = instructions.substring(place + 4);
 
-        console.log(instructions);
-        console.log(part1);
-        console.log(part2);
         return processDo(part2);
     }
 
@@ -50,3 +47,6 @@ const ops = parsed.match(regex1);
 if (ops !== null) {
     console.log(ops.reduce(func, 0));
 }
+
+const durationMs = performance.now() - start;
+console.log(`Execution time: ${durationMs.toFixed(3)}ms`);
